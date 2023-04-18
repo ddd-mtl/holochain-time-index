@@ -11,10 +11,10 @@ use crate::entries::{Index, IndexType, StringIndex, WrappedPath};
 use crate::errors::{IndexError, IndexResult};
 use crate::search::get_naivedatetime;
 use crate::utils::find_divergent_time;
-use crate::{IndexableHash, Order, DEFAULT_INDEX_DEPTH, INDEX_DEPTH};
+use crate::{IndexableEntry, Order, DEFAULT_INDEX_DEPTH, INDEX_DEPTH};
 
 pub(crate) fn make_dfs_search<
-    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableHash + Debug,
+    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableEntry + Debug,
     ILT: LinkTypeFilterExt + Clone,
     PLT: Clone,
 >(

@@ -90,6 +90,6 @@ pub fn get_current_addresses(
 }
 
 #[hdk_extern]
-pub fn remove_index(address: AnyLinkableHash) -> ExternResult<()> {
+pub fn remove_index(address: EntryHash) -> ExternResult<()> {
     Ok(hc_time_index::remove_index(address, LinkTypes::Index).map_err(|error| utils::err(&format!("{}", error)))?)
 }

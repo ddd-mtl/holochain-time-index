@@ -23,7 +23,7 @@ impl IndexableEntry for TestEntry {
         self.created
     }
 
-    fn hash(&self) -> ExternResult<AnyLinkableHash> {
+    fn hash(&self) -> ExternResult<EntryHash> {
         hash_entry(self)
     }
 }
