@@ -9,7 +9,7 @@ use crate::search::find_newest_time_path;
 use crate::utils::{add_time_index_to_path, get_index_for_timestamp, get_time_path};
 use crate::{
     entries::{Index, IndexType, StringIndex, TimeIndex},
-    EntryChunkIndex, IndexableEntry, SearchStrategy, MAX_CHUNK_INTERVAL,
+    EntryChunkIndex, IndexableHash, SearchStrategy, MAX_CHUNK_INTERVAL,
 };
 use crate::{
     errors::{IndexError, IndexResult},
@@ -274,7 +274,7 @@ where
 
 /// Get all links that exist for some time period between from -> until
 pub(crate) fn get_links_and_load_for_time_span<
-    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableEntry + std::fmt::Debug,
+    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableHash + std::fmt::Debug,
     ILT: LinkTypeFilterExt + Clone,
     PLT: Clone,
 >(

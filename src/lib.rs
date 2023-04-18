@@ -100,7 +100,7 @@ mod validation;
 pub mod entries;
 
 /// Trait to impl on entries that you want to add to time index
-pub use traits::IndexableEntry;
+pub use traits::IndexableHash;
 
 use entries::{Index, IndexType};
 use errors::{IndexError, IndexResult};
@@ -178,7 +178,7 @@ pub fn get_links_for_time_span<PLT: Clone>(
 
 /// Get links for index that exist between two timestamps and attempt to serialize link targets to T
 pub fn get_links_and_load_for_time_span<
-    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableEntry + std::fmt::Debug,
+    T: TryFrom<SerializedBytes, Error = SerializedBytesError> + IndexableHash + std::fmt::Debug,
     ILT: LinkTypeFilterExt + Clone,
     PLT: Clone
 >(
@@ -226,7 +226,7 @@ pub fn get_current_index<PLT: Clone + LinkTypeFilterExt>(
 
 /// Index a given entry. Uses ['IndexableEntry::entry_time()'] to get time it should be indexed under.
 /// Will create link from time path to entry with link_tag passed into fn
-pub fn index_entry<T: IndexableEntry, LT: Into<LinkTag>, ILT: Clone, PLT>(
+pub fn index_entry<T: IndexableHash, LT: Into<LinkTag>, ILT: Clone, PLT>(
     index: String,
     data: T,
     link_tag: LT,
@@ -243,14 +243,14 @@ pub fn index_entry<T: IndexableEntry, LT: Into<LinkTag>, ILT: Clone, PLT>(
 }
 
 /// Removes a given indexed entry from the time tree
-pub fn remove_index(indexed_entry: EntryHash, index_link_type: impl LinkTypeFilterExt + Clone) -> IndexResult<()> {
+pub fn remove_index(indexed_hash: AnyLinkableHash, index_link_type: impl LinkTypeFilterExt + Clone) -> IndexResult<()> {
     let time_paths =
-        get_links(indexed_entry.clone(), index_link_type.clone(), Some(LinkTag::new("time_path")))?;
+        get_links(indexed_hash.clone(), index_link_type.clone(), Some(LinkTag::new("time_path")))?;
     for time_path in time_paths {
         let path_links = get_links(time_path.target.clone(), index_link_type.clone(), None)?;
         let path_links: Vec<Link> = path_links
             .into_iter()
-            .filter(|link| EntryHash::from(link.target.to_owned()) == indexed_entry)
+            .filter(|link| link.target.to_owned() == indexed_hash)
             .collect();
         for path_link in path_links {
             // debug!(
